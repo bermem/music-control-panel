@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Control Panel</title>
+<style>
+body{
+  font-family: Arial;
+  background:#111;
+  color:white;
+  padding:15px;
+}
+textarea, select, button{
+  width:100%;
+  margin-top:10px;
+  padding:12px;
+  border-radius:10px;
+  border:none;
+  font-size:16px;
+}
+textarea{
+  height:160px;
+}
+button{
+  background:#ff4d6d;
+  color:white;
+  font-weight:bold;
+}
+#output{
+  background:#222;
+  margin-top:20px;
+  padding:15px;
+  border-radius:10px;
+  white-space:pre-wrap;
+}
+</style>
+</head>
+<body>
+
+<h3>🎵 Thai Emotional Pop Panel</h3>
+
+<select id="version">
+  <option value="streaming">Streaming</option>
+  <option value="performance">Performance</option>
+  <option value="hook">Short Hook</option>
+</select>
+
+<textarea id="lyrics" placeholder="วางเนื้อเพลงตรงนี้..."></textarea>
+
+<button onclick="generate()">Generate</button>
+
+<div id="output"></div>
+
+<script>
+function generate(){
+  let v = document.getElementById("version").value;
+  let lyrics = document.getElementById("lyrics").value;
+
+  let structure = "";
+
+  if(v=="streaming"){
+    structure="Intro 6s | Verse | Pre | Hook | Verse | Pre | Hook | Bridge | Final Hook x2 | 2:40–3:05";
+  }
+  if(v=="performance"){
+    structure="Intro 15s build | Verse | Pre | Hook | Verse | Pre big | Hook | Bridge | Final Hook x2 | 3:00–3:40";
+  }
+  if(v=="hook"){
+    structure="Start Hook | 30–45s | Loop ending | No intro/outro";
+  }
+
+  document.getElementById("output").innerText =
+`Style: Thai Emotional Pop
+Tempo: 88 BPM
+Structure: ${structure}
+
+Lyrics:
+${lyrics}`;
+}
+</script>
+
+</body>
+</html>

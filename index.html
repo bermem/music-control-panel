@@ -2,30 +2,153 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>V3.4 PRO Multi-Syllable Engine</title>
+<title>V5.0 Ultimate Studio</title>
 <style>
-body{background:#0f0f14;color:#fff;font-family:Arial;padding:20px}
-.container{max-width:950px;margin:auto}
-h1{color:#00ffd0;text-align:center}
-select,textarea{width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid #333;background:#1a1a22;color:#fff}
-button{margin-top:10px;padding:8px 12px;background:#00ffd0;border:none;border-radius:6px;font-weight:bold;cursor:pointer}
-.output{margin-top:15px;padding:15px;background:#14141b;border-radius:8px;white-space:pre-wrap}
-.section{margin-top:20px;color:#00ffd0;font-weight:bold}
+body{
+background:#0b0f1a;
+color:#00ffd0;
+font-family:monospace;
+padding:20px;
+}
+.container{max-width:1100px;margin:auto}
+h1{text-align:center}
+select,button{
+margin-top:10px;
+padding:10px;
+border-radius:6px;
+border:none;
+font-family:monospace;
+}
+select{background:#111;color:#00ffd0;width:100%}
+button{background:#00ffd0;color:#000;font-weight:bold;width:100%}
+.output{
+margin-top:20px;
+background:#111;
+padding:15px;
+border-radius:6px;
+white-space:pre-wrap;
+color:#fff;
+}
+.section{margin-top:30px;color:#00ffd0}
 </style>
 </head>
 <body>
 <div class="container">
-<h1>🎛 V3.4 PRO Multi-Syllable Engine</h1>
+<h1>🎛 V5.0 Ultimate Studio</h1>
 
-<label>Language</label>
-<select id="lang">
-<option value="TH">Thai</option>
-<option value="EN">English</option>
+<label>Gender</label>
+<select id="gender">
+<option value="male">Male</option>
+<option value="female">Female</option>
 </select>
 
-<label>Theme</label>
-<textarea id="theme" rows="2"></textarea>
+<label>Market</label>
+<select id="market">
+<option value="TH">Thai</option>
+<option value="EN">International</option>
+</select>
 
-<button onclick="generate()">Generate</button>
+<button onclick="generate()">AUTO GENERATE</button>
+<button onclick="randomAll()">🎲 RANDOM ALL</button>
+<button onclick="albumMode()">💿 FULL ALBUM MODE</button>
 
-<div class="section">📝 Lyrics (Advanced Rhyme + Key Change)</div>
+<div class="section">🎼 Melody Suggestion</div>
+<div id="melody" class="output"></div>
+
+<div class="section">📝 Lyrics</div>
+<div id="lyrics" class="output"></div>
+
+<div class="section">✨ AI Rewrite (Premium Tone)</div>
+<div id="rewrite" class="output"></div>
+
+</div>
+
+<script>
+
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)]}
+
+const themesTH=["คืนที่เราเต้น","แสงไฟในเมือง","ความรักไม่จาง","เสียงหัวใจเรียกหา"];
+const themesEN=["Neon Night","Burning Heart","Endless Fire","Lost in Light"];
+
+function melodyEngine(){
+return `
+Verse Melody:
+C - D - E - G (soft build)
+
+Pre-Chorus:
+E - G - A - B (lift tension)
+
+Chorus:
+G - A - C - D - E (anthemic peak)
+
+Final Key Change:
++1 Tone modulation
+`;
+}
+
+function generate(){
+let gender=document.getElementById("gender").value;
+let market=document.getElementById("market").value;
+
+let theme= market==="TH"? rand(themesTH):rand(themesEN);
+
+let lyrics="";
+if(market==="TH"){
+lyrics=`
+[Verse]
+${theme} ในคืนที่ใจไม่ไกล
+เสียงหัวใจเต้นแรงไป
+แสงไฟพาเราเริ่มใหม่
+
+[Chorus]
+เธอคือแสงในหัวใจ
+ไม่ว่าไกลแค่ไหน
+รักเราจะยืนยาวไป
+`;
+}else{
+lyrics=`
+[Verse]
+${theme} under neon light
+Hearts are burning bright
+We hold on tonight
+
+[Chorus]
+We are alive tonight
+Shining in the light
+Love will never die
+`;
+}
+
+document.getElementById("melody").innerText=melodyEngine();
+document.getElementById("lyrics").innerText=lyrics;
+document.getElementById("rewrite").innerText=aiRewrite(lyrics,market,gender);
+}
+
+function aiRewrite(text,market,gender){
+if(market==="TH"){
+return text.replace(/แสง/g,"ประกาย")
+.replace(/รัก/g,"ความรักอันลึกซึ้ง");
+}else{
+return text.replace(/love/gi,"eternal love")
+.replace(/alive/gi,"electrified and alive");
+}
+}
+
+function randomAll(){
+document.getElementById("gender").value=rand(["male","female"]);
+document.getElementById("market").value=rand(["TH","EN"]);
+generate();
+}
+
+function albumMode(){
+let output="";
+for(let i=1;i<=5;i++){
+generate();
+output+="\n--- Track "+i+" ---\n"+document.getElementById("lyrics").innerText+"\n";
+}
+document.getElementById("lyrics").innerText=output;
+}
+
+</script>
+</body>
+</html>

@@ -2,36 +2,76 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>AI Music Control Panel V2.3 FIX</title>
+<title>AI Music Control Panel V2.3 Stable</title>
+
 <style>
-body{background:#0b0f14;color:#fff;font-family:Arial;margin:40px;}
-h1{color:#00ffd0;}
-.section{border:1px solid #222;padding:18px;margin-bottom:22px;border-radius:10px;}
-label{display:block;margin-top:10px;font-size:14px;}
-select,input,button{background:#151a22;color:#fff;border:1px solid #333;padding:8px;margin:5px 0;}
-button{cursor:pointer;}
-.slider-value{font-size:12px;opacity:0.7;}
-#output{white-space:pre-wrap;background:#111;padding:15px;border:1px solid #333;margin-top:15px;min-height:150px;}
+body{
+  background:#0e1117;
+  color:#ffffff;
+  font-family:Arial, sans-serif;
+  margin:40px;
+}
+h1{
+  color:#00ffd0;
+}
+.section{
+  border:1px solid #222;
+  padding:20px;
+  margin-bottom:25px;
+  border-radius:10px;
+}
+label{
+  display:block;
+  margin-top:10px;
+}
+select,input,button{
+  background:#161b22;
+  color:white;
+  border:1px solid #333;
+  padding:8px;
+  margin-top:5px;
+}
+button{
+  cursor:pointer;
+}
+#output{
+  margin-top:20px;
+  padding:15px;
+  background:#111;
+  border:1px solid #333;
+  white-space:pre-wrap;
+  min-height:150px;
+}
+.slider-value{
+  font-size:12px;
+  opacity:0.7;
+}
 </style>
 </head>
+
 <body>
 
 <h1>🎛 AI Music Control Panel V2.3</h1>
 
 <div class="section">
-<h3>Core Setup</h3>
+<h3>Basic Setup</h3>
 
-<input id="songTitle" placeholder="Song Title">
-<input id="customHook" placeholder="Custom Hook Line"><br>
+<label>Song Title</label>
+<input id="title" placeholder="Song Title">
 
+<label>Main Hook</label>
+<input id="hook" placeholder="Catchy Hook Line">
+
+<label>Genre</label>
 <select id="genre">
 <option>Modern Pop</option>
 <option>EDM Festival</option>
 <option>T-POP Ballad</option>
-<option>80s Dance Pop</option>
+<option>80s Retro</option>
 <option>Lo-fi Chill</option>
 </select>
 
+<label>BPM</label>
 <select id="bpm">
 <option>90</option>
 <option>100</option>
@@ -40,51 +80,29 @@ button{cursor:pointer;}
 <option>128</option>
 </select>
 
+<label>Song Length</label>
 <select id="length">
-<option>3-4 min (Radio)</option>
-<option>4-5 min (Extended)</option>
-<option>6-7 min (Algorithm Boost)</option>
+<option>Radio 3-4 min</option>
+<option>Extended 4-5 min</option>
+<option>Algorithm 6-7 min</option>
 </select>
 
-<button onclick="generate()">🎵 Generate</button>
 </div>
 
-<div id="output"></div>
+<div class="section">
+<h3>Pro Sound Controls</h3>
 
-<script>
+<label>Punch <span id="punchVal" class="slider-value">5</span></label>
+<input type="range" id="punch" min="1" max="10" value="5">
 
-function structureIntelligence(length){
- if(length.includes("3-4"))
-   return "Radio Structure: Intro / Verse / Pre / Chorus / Verse / Chorus / Bridge / Final Chorus";
- if(length.includes("4-5"))
-   return "Extended Structure with Instrumental Break";
- if(length.includes("6-7"))
-   return "Algorithm Boost Structure with Hook x3 + Extended Outro";
- return "Standard Structure";
-}
+<label>Depth <span id="depthVal" class="slider-value">5</span></label>
+<input type="range" id="depth" min="1" max="10" value="5">
 
-function generate(){
+<label>Aggression <span id="aggVal" class="slider-value">5</span></label>
+<input type="range" id="aggression" min="1" max="10" value="5">
 
- const title=document.getElementById("songTitle").value || "Untitled";
- const hook=document.getElementById("customHook").value || "Memorable Repeatable Hook";
- const genre=document.getElementById("genre").value;
- const bpm=document.getElementById("bpm").value;
- const length=document.getElementById("length").value;
+<label>Warmth <span id="warmVal" class="slider-value">5</span></label>
+<input type="range" id="warmth" min="1" max="10" value="5">
 
- const structure=structureIntelligence(length);
-
- const prompt=
-`Title: ${title}
-
-Genre: ${genre}
-Tempo: ${bpm} BPM
-Structure: ${structure}
-
-Hook:
-"${hook}"
-
-Production Quality:
-High-end studio mix, premium clarity, preserved dynamic range.`;
-
- document.getElementById("output").innerText=prompt;
-}
+<label>Stereo Width <span id="widthVal" class="slider-value">5</span></label>
+<input type="range" id="width"

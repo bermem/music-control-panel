@@ -2,79 +2,114 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Music Control Panel</title>
+<title>Music Control Panel v1.1</title>
 <style>
-body{
-  font-family: Arial;
-  background:#111;
-  color:white;
-  padding:15px;
+body{font-family:Arial;background:#0f0f14;color:#fff;padding:16px}
+.card{background:#171722;padding:16px;border-radius:14px;margin-bottom:14px}
+h3{margin-top:0}
+textarea,select,input,button{
+  width:100%;margin-top:10px;padding:12px;border-radius:10px;border:none;font-size:16px
 }
-textarea, select, button{
-  width:100%;
-  margin-top:10px;
-  padding:12px;
-  border-radius:10px;
-  border:none;
-  font-size:16px;
-}
-textarea{
-  height:160px;
-}
-button{
-  background:#ff4d6d;
-  color:white;
-  font-weight:bold;
-}
-#output{
-  background:#222;
-  margin-top:20px;
-  padding:15px;
-  border-radius:10px;
-  white-space:pre-wrap;
-}
+textarea{height:160px}
+button{background:#ff4d6d;color:#fff;font-weight:bold}
+.secondary{background:#2a2a3a}
+#output{background:#101018;margin-top:14px;padding:14px;border-radius:12px;white-space:pre-wrap}
+.row{display:flex;gap:10px}
+.row > *{flex:1}
+small{opacity:.7}
 </style>
 </head>
 <body>
 
-<h3>🎵 Thai Emotional Pop Panel</h3>
+<div class="card">
+<h3>🎛 Thai Emotional Pop – Control Panel v1.1</h3>
 
-<select id="version">
-  <option value="streaming">Streaming</option>
-  <option value="performance">Performance</option>
-  <option value="hook">Short Hook</option>
-</select>
+<label>Song Title</label>
+<input id="title" placeholder="ชื่อเพลง...">
 
+<div class="row">
+  <div>
+    <label>Version</label>
+    <select id="version">
+      <option value="streaming">Streaming</option>
+      <option value="performance">Performance</option>
+      <option value="hook">Short Hook</option>
+    </select>
+  </div>
+  <div>
+    <label>Override</label>
+    <select id="override">
+      <option value="clean">Clean</option>
+      <option value="strong">Strong</option>
+    </select>
+  </div>
+</div>
+
+<label>Lyrics</label>
 <textarea id="lyrics" placeholder="วางเนื้อเพลงตรงนี้..."></textarea>
 
-<button onclick="generate()">Generate</button>
+<button onclick="generate()">Generate Prompt</button>
+<button class="secondary" onclick="copyOutput()">📋 Copy Output</button>
 
 <div id="output"></div>
+<small>Tip: ระบบจะจำค่าล่าสุดให้อัตโนมัติ</small>
+</div>
 
 <script>
+function getStructure(v){
+  if(v==="streaming"){
+    return "Intro 6s | Verse | Pre | Hook | Verse | Pre | Hook | Bridge | Final Hook x2 | 2:40–3:05";
+  }
+  if(v==="performance"){
+    return "Intro 15s build | Verse | Pre | Hook | Verse | Pre big | Hook | Bridge | Final Hook x2 | 3:00–3:40";
+  }
+  return "Start Hook | 30–45s | Loop ending | No intro/outro";
+}
+
+function getOverrideNote(o){
+  if(o==="strong"){
+    return "Hook Density: High | Add vocal lift + harmony in final hook";
+  }
+  return "Hook Density: Medium | Natural dynamic build";
+}
+
 function generate(){
-  let v = document.getElementById("version").value;
-  let lyrics = document.getElementById("lyrics").value;
+  const title=document.getElementById("title").value||"Untitled";
+  const v=document.getElementById("version").value;
+  const o=document.getElementById("override").value;
+  const lyrics=document.getElementById("lyrics").value;
 
-  let structure = "";
-
-  if(v=="streaming"){
-    structure="Intro 6s | Verse | Pre | Hook | Verse | Pre | Hook | Bridge | Final Hook x2 | 2:40–3:05";
-  }
-  if(v=="performance"){
-    structure="Intro 15s build | Verse | Pre | Hook | Verse | Pre big | Hook | Bridge | Final Hook x2 | 3:00–3:40";
-  }
-  if(v=="hook"){
-    structure="Start Hook | 30–45s | Loop ending | No intro/outro";
-  }
-
-  document.getElementById("output").innerText =
-`Style: Thai Emotional Pop
+  const output=
+`Title: ${title}
+Style: Thai Emotional Pop
 Tempo: 88 BPM
-Structure: ${structure}
+Structure: ${getStructure(v)}
+${getOverrideNote(o)}
 
 Lyrics:
 ${lyrics}`;
+
+  document.getElementById("output").innerText=output;
+
+  localStorage.setItem("mcp_v11", JSON.stringify({title,v,o,lyrics}));
+}
+
+function copyOutput(){
+  const text=document.getElementById("output").innerText;
+  if(!text){alert("ยังไม่มี Output");return;}
+  navigator.clipboard.writeText(text);
+  alert("คัดลอกแล้ว ✅");
+}
+
+window.onload=function(){
+  const saved=localStorage.getItem("mcp_v11");
+  if(saved){
+    const d=JSON.parse(saved);
+    document.getElementById("title").value=d.title||"";
+    document.getElementById("version").value=d.v||"streaming";
+    document.getElementById("override").value=d.o||"clean";
+    document.getElementById("lyrics").value=d.lyrics||"";
+  }
 }
 </script>
 

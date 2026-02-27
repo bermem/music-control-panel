@@ -2,28 +2,25 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>V3.2 PRO Hybrid Studio</title>
+<title>V3.4 PRO Multi-Syllable Engine</title>
 <style>
 body{background:#0f0f14;color:#fff;font-family:Arial;padding:20px}
-.container{max-width:900px;margin:auto}
+.container{max-width:950px;margin:auto}
 h1{color:#00ffd0;text-align:center}
 select,textarea{width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid #333;background:#1a1a22;color:#fff}
 button{margin-top:10px;padding:8px 12px;background:#00ffd0;border:none;border-radius:6px;font-weight:bold;cursor:pointer}
 .output{margin-top:15px;padding:15px;background:#14141b;border-radius:8px;white-space:pre-wrap}
 .section{margin-top:20px;color:#00ffd0;font-weight:bold}
-.history-item{background:#1c1c24;padding:8px;margin-top:5px;border-radius:6px}
 </style>
 </head>
 <body>
 <div class="container">
-<h1>🎛 V3.2 PRO Hybrid Studio</h1>
+<h1>🎛 V3.4 PRO Multi-Syllable Engine</h1>
 
-<label>Select Artist</label>
-<select id="artist">
-<option value="A">Thai Male</option>
-<option value="B">Thai Female</option>
-<option value="C">English Male</option>
-<option value="D">English Female</option>
+<label>Language</label>
+<select id="lang">
+<option value="TH">Thai</option>
+<option value="EN">English</option>
 </select>
 
 <label>Theme</label>
@@ -31,134 +28,4 @@ button{margin-top:10px;padding:8px 12px;background:#00ffd0;border:none;border-ra
 
 <button onclick="generate()">Generate</button>
 
-<div class="section">📝 Lyrics</div>
-<div id="lyricsOut" class="output"></div>
-
-<div class="section">💾 History</div>
-<div id="history"></div>
-
-</div>
-
-<script>
-function rand(arr){return arr[Math.floor(Math.random()*arr.length)]}
-
-function generate(){
-const artist=document.getElementById("artist").value;
-const theme=document.getElementById("theme").value;
-
-let verse1=[],verse2=[],hook=[];
-
-if(artist==="A"||artist==="B"){
-// Thai rhyme sets
-let endings=["ใจ","ไป","ไกล","ใหม่"];
-let end=rand(endings);
-
-verse1=[
-`แสงไฟสะท้อนใน${theme}`,
-`หัวใจยังเต้นไป`,
-`คืนวันไม่เคยไกล`,
-`ความฝันเริ่มต้นใหม่`
-];
-
-verse2=[
-`เสียงเพลงยังพาใจ`,
-`ให้เราเดินต่อไป`,
-`แม้ทางจะห่างไกล`,
-`แต่รักยังสดใหม่`
-];
-
-hook=[
-`เธอคือแสงในหัวใจ`,
-`ส่องทางฉันต่อไป`,
-`เธอคือแสงในหัวใจ`,
-`ไม่ว่าไกลแค่ไหน`
-];
-}else{
-// English rhyme sets
-let rhymePairs=[
-["light","night"],
-["fire","desire"],
-["heart","start"],
-["time","mine"]
-];
-let pair=rand(rhymePairs);
-
-verse1=[
-`City lights burning ${pair[0]}`,
-`We keep dancing through the ${pair[1]}`,
-`Every dream feels so right`,
-`Holding on to the night`
-];
-
-verse2=[
-`We were running through ${pair[0]}`,
-`Chasing sparks in the ${pair[1]}`,
-`Every shadow turns bright`,
-`When you hold me tight`
-];
-
-hook=[
-`We are alive tonight`,
-`Shining in neon light`,
-`We are alive tonight`,
-`Burning forever bright`
-];
-}
-
-let lyrics=`
-[Synth Intro]
-
-[Verse 1]
-${verse1.join("\n")}
-
-[Chorus]
-${hook.join("\n")}
-
-[Verse 2]
-${verse2.join("\n")}
-
-[Final Chorus x2]
-${hook.join("\n")}
-`;
-
-document.getElementById("lyricsOut").innerText=lyrics;
-saveHistory(lyrics);
-loadHistory();
-}
-
-function saveHistory(text){
-let songs=JSON.parse(localStorage.getItem("songs")||"[]");
-songs.unshift(text);
-localStorage.setItem("songs",JSON.stringify(songs));
-}
-
-function loadHistory(){
-let songs=JSON.parse(localStorage.getItem("songs")||"[]");
-let container=document.getElementById("history");
-container.innerHTML="";
-songs.forEach((song,i)=>{
-container.innerHTML+=`
-<div class="history-item">
-<button onclick="loadSong(${i})">Load</button>
-<button onclick="deleteSong(${i})">Delete</button>
-Song ${i+1}
-</div>`;
-});
-}
-
-function loadSong(i){
-let songs=JSON.parse(localStorage.getItem("songs")||"[]");
-document.getElementById("lyricsOut").innerText=songs[i];
-}
-
-function deleteSong(i){
-let songs=JSON.parse(localStorage.getItem("songs")||"[]");
-songs.splice(i,1);
-localStorage.setItem("songs",JSON.stringify(songs));
-loadHistory();
-}
-
-loadHistory();
-</script>
-</body>
-</html>
+<div class="section">📝 Lyrics (Advanced Rhyme + Key Change)</div>

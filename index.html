@@ -105,4 +105,88 @@ button{
 <input type="range" id="warmth" min="1" max="10" value="5">
 
 <label>Stereo Width <span id="widthVal" class="slider-value">5</span></label>
-<input type="range" id="width"
+<input type="range" id="width" min="1" max="10" value="5">
+
+</div>
+
+<button onclick="generatePrompt()">🎵 Generate Prompt</button>
+
+<div id="output"></div>
+
+<script>
+
+function updateSliderDisplay(id, displayId){
+  document.getElementById(displayId).innerText =
+  document.getElementById(id).value;
+}
+
+document.getElementById("punch").oninput = function(){
+  updateSliderDisplay("punch","punchVal");
+};
+document.getElementById("depth").oninput = function(){
+  updateSliderDisplay("depth","depthVal");
+};
+document.getElementById("aggression").oninput = function(){
+  updateSliderDisplay("aggression","aggVal");
+};
+document.getElementById("warmth").oninput = function(){
+  updateSliderDisplay("warmth","warmVal");
+};
+document.getElementById("width").oninput = function(){
+  updateSliderDisplay("width","widthVal");
+};
+
+function getStructure(length){
+  if(length.includes("Radio"))
+    return "Intro / Verse / Pre-Chorus / Chorus / Verse / Chorus / Bridge / Final Chorus";
+  if(length.includes("Extended"))
+    return "Extended structure with instrumental break and dynamic build";
+  if(length.includes("Algorithm"))
+    return "Hook x3 + Extended outro for algorithm boost";
+  return "Standard structure";
+}
+
+function generatePrompt(){
+
+  const title = document.getElementById("title").value || "Untitled";
+  const hook = document.getElementById("hook").value || "Memorable Repeatable Hook";
+  const genre = document.getElementById("genre").value;
+  const bpm = document.getElementById("bpm").value;
+  const length = document.getElementById("length").value;
+
+  const punch = document.getElementById("punch").value;
+  const depth = document.getElementById("depth").value;
+  const aggression = document.getElementById("aggression").value;
+  const warmth = document.getElementById("warmth").value;
+  const width = document.getElementById("width").value;
+
+  const structure = getStructure(length);
+
+  const prompt =
+`Title: ${title}
+
+Genre: ${genre}
+Tempo: ${bpm} BPM
+Structure: ${structure}
+
+Main Hook:
+"${hook}"
+
+Sound Profile:
+Punch: ${punch}/10
+Depth: ${depth}/10
+Aggression: ${aggression}/10
+Warmth: ${warmth}/10
+Stereo Width: ${width}/10
+
+Production Quality:
+High-end studio mix, premium clarity, preserved dynamic range.
+`;
+
+  document.getElementById("output").innerText = prompt;
+}
+
+</script>
+
+</body>
+</html>

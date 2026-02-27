@@ -1,116 +1,201 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Music Control Panel v1.1</title>
+<meta charset="UTF-8">
+<title>AI Music Control Panel V1.3</title>
+
 <style>
-body{font-family:Arial;background:#0f0f14;color:#fff;padding:16px}
-.card{background:#171722;padding:16px;border-radius:14px;margin-bottom:14px}
-h3{margin-top:0}
-textarea,select,input,button{
-  width:100%;margin-top:10px;padding:12px;border-radius:10px;border:none;font-size:16px
+body{
+  background:#0f0f0f;
+  color:#ffffff;
+  font-family:Arial, sans-serif;
+  margin:40px;
 }
-textarea{height:160px}
-button{background:#ff4d6d;color:#fff;font-weight:bold}
-.secondary{background:#2a2a3a}
-#output{background:#101018;margin-top:14px;padding:14px;border-radius:12px;white-space:pre-wrap}
-.row{display:flex;gap:10px}
-.row > *{flex:1}
-small{opacity:.7}
+h1{
+  color:#00ffcc;
+}
+select,input,button,textarea{
+  background:#1e1e1e;
+  color:#ffffff;
+  border:1px solid #333;
+  padding:8px;
+  margin:5px 0;
+}
+button{
+  cursor:pointer;
+}
+#output{
+  white-space:pre-wrap;
+  background:#111;
+  padding:15px;
+  border:1px solid #333;
+  margin-top:15px;
+}
+.section{
+  margin-bottom:20px;
+  padding:15px;
+  border:1px solid #222;
+}
 </style>
 </head>
+
 <body>
 
-<div class="card">
-<h3>🎛 Thai Emotional Pop – Control Panel v1.1</h3>
+<h1>🎛 AI Music Control Panel V1.3</h1>
 
-<label>Song Title</label>
-<input id="title" placeholder="ชื่อเพลง...">
+<div class="section">
+<h3>Song Setup</h3>
 
-<div class="row">
-  <div>
-    <label>Version</label>
-    <select id="version">
-      <option value="streaming">Streaming</option>
-      <option value="performance">Performance</option>
-      <option value="hook">Short Hook</option>
-    </select>
-  </div>
-  <div>
-    <label>Override</label>
-    <select id="override">
-      <option value="clean">Clean</option>
-      <option value="strong">Strong</option>
-    </select>
-  </div>
+<input id="songTitle" placeholder="Song Title" />
+<button onclick="generateTitle()">✨ Auto Title</button>
+
+<br>
+
+<select id="version">
+<option value="V1">V1 - Basic</option>
+<option value="V2">V2 - Extended</option>
+<option value="V3">V3 - Ultra Algorithm</option>
+</select>
+
+<select id="overrideLevel">
+<option value="clean">Clean</option>
+<option value="strong">Strong</option>
+</select>
+
+<br>
+<button onclick="generate()">🎵 Generate Prompt</button>
+<button onclick="copyOutput()">📋 Copy</button>
+<button onclick="exportTXT()">💾 Export .txt</button>
 </div>
 
-<label>Lyrics</label>
-<textarea id="lyrics" placeholder="วางเนื้อเพลงตรงนี้..."></textarea>
+<div class="section">
+<h3>Saved Presets</h3>
+<input id="presetName" placeholder="Preset Name"/>
+<button onclick="savePreset()">Save Preset</button>
+<select id="presetList"></select>
+<button onclick="loadPreset()">Load</button>
+</div>
 
-<button onclick="generate()">Generate Prompt</button>
-<button class="secondary" onclick="copyOutput()">📋 Copy Output</button>
+<div class="section">
+<h3>Prompt History</h3>
+<select id="historyList"></select>
+<button onclick="loadHistory()">Load Selected</button>
+</div>
 
 <div id="output"></div>
-<small>Tip: ระบบจะจำค่าล่าสุดให้อัตโนมัติ</small>
-</div>
 
 <script>
-function getStructure(v){
-  if(v==="streaming"){
-    return "Intro 6s | Verse | Pre | Hook | Verse | Pre | Hook | Bridge | Final Hook x2 | 2:40–3:05";
-  }
-  if(v==="performance"){
-    return "Intro 15s build | Verse | Pre | Hook | Verse | Pre big | Hook | Bridge | Final Hook x2 | 3:00–3:40";
-  }
-  return "Start Hook | 30–45s | Loop ending | No intro/outro";
-}
 
-function getOverrideNote(o){
-  if(o==="strong"){
-    return "Hook Density: High | Add vocal lift + harmony in final hook";
-  }
-  return "Hook Density: Medium | Natural dynamic build";
+let history = JSON.parse(localStorage.getItem("promptHistory")) || [];
+let presets = JSON.parse(localStorage.getItem("promptPresets")) || {};
+
+function generateTitle(){
+  const words=["Midnight","Neon","Broken","Echo","Forever","Dream","Electric","Shadow"];
+  const random=words[Math.floor(Math.random()*words.length)];
+  document.getElementById("songTitle").value=random+" Love";
 }
 
 function generate(){
-  const title=document.getElementById("title").value||"Untitled";
-  const v=document.getElementById("version").value;
-  const o=document.getElementById("override").value;
-  const lyrics=document.getElementById("lyrics").value;
+  const title=document.getElementById("songTitle").value || "Untitled";
+  const version=document.getElementById("version").value;
+  const override=document.getElementById("overrideLevel").value;
 
-  const output=
+  let structure="";
+  if(version==="V1"){
+    structure="Standard Verse / Chorus / Verse / Chorus";
+  }
+  if(version==="V2"){
+    structure="Extended Structure with Pre-Chorus + Bridge";
+  }
+  if(version==="V3"){
+    structure="Ultra Algorithm-Proof 6-7 min, Hook Repetition x3";
+  }
+
+  let overrideText="";
+  if(override==="strong"){
+    overrideText="\nOverride: Strong hook repetition, layered chorus, extended outro.";
+  }
+
+  const finalPrompt=
 `Title: ${title}
-Style: Thai Emotional Pop
-Tempo: 88 BPM
-Structure: ${getStructure(v)}
-${getOverrideNote(o)}
+Version: ${version}
+Structure: ${structure}
+${overrideText}
 
-Lyrics:
-${lyrics}`;
+Genre: Modern Pop
+Tempo: 90-110 BPM
+Emotional Hook: Memorable, repeatable line`;
 
-  document.getElementById("output").innerText=output;
+  document.getElementById("output").innerText=finalPrompt;
 
-  localStorage.setItem("mcp_v11", JSON.stringify({title,v,o,lyrics}));
+  history.push(finalPrompt);
+  localStorage.setItem("promptHistory",JSON.stringify(history));
+  updateHistory();
 }
 
 function copyOutput(){
   const text=document.getElementById("output").innerText;
-  if(!text){alert("ยังไม่มี Output");return;}
   navigator.clipboard.writeText(text);
-  alert("คัดลอกแล้ว ✅");
+  alert("Copied!");
 }
 
-window.onload=function(){
-  const saved=localStorage.getItem("mcp_v11");
-  if(saved){
-    const d=JSON.parse(saved);
-    document.getElementById("title").value=d.title||"";
-    document.getElementById("version").value=d.v||"streaming";
-    document.getElementById("override").value=d.o||"clean";
-    document.getElementById("lyrics").value=d.lyrics||"";
+function exportTXT(){
+  const text=document.getElementById("output").innerText;
+  const blob=new Blob([text],{type:"text/plain"});
+  const link=document.createElement("a");
+  link.href=URL.createObjectURL(blob);
+  link.download="prompt.txt";
+  link.click();
+}
+
+function savePreset(){
+  const name=document.getElementById("presetName").value;
+  const version=document.getElementById("version").value;
+  const override=document.getElementById("overrideLevel").value;
+
+  presets[name]={version,override};
+  localStorage.setItem("promptPresets",JSON.stringify(presets));
+  updatePresetList();
+}
+
+function loadPreset(){
+  const selected=document.getElementById("presetList").value;
+  if(presets[selected]){
+    document.getElementById("version").value=presets[selected].version;
+    document.getElementById("overrideLevel").value=presets[selected].override;
   }
 }
+
+function updatePresetList(){
+  const list=document.getElementById("presetList");
+  list.innerHTML="";
+  for(let key in presets){
+    let option=document.createElement("option");
+    option.value=key;
+    option.text=key;
+    list.appendChild(option);
+  }
+}
+
+function updateHistory(){
+  const list=document.getElementById("historyList");
+  list.innerHTML="";
+  history.forEach((item,index)=>{
+    let option=document.createElement("option");
+    option.value=index;
+    option.text="Prompt "+(index+1);
+    list.appendChild(option);
+  });
+}
+
+function loadHistory(){
+  const index=document.getElementById("historyList").value;
+  document.getElementById("output").innerText=history[index];
+}
+
+updatePresetList();
+updateHistory();
+
 </script>
 
 </body>

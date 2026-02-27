@@ -2,191 +2,163 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>AI Music Control Panel V2.3 Stable</title>
-
+<title>V3.2 PRO Hybrid Studio</title>
 <style>
-body{
-  background:#0e1117;
-  color:#ffffff;
-  font-family:Arial, sans-serif;
-  margin:40px;
-}
-h1{
-  color:#00ffd0;
-}
-.section{
-  border:1px solid #222;
-  padding:20px;
-  margin-bottom:25px;
-  border-radius:10px;
-}
-label{
-  display:block;
-  margin-top:10px;
-}
-select,input,button{
-  background:#161b22;
-  color:white;
-  border:1px solid #333;
-  padding:8px;
-  margin-top:5px;
-}
-button{
-  cursor:pointer;
-}
-#output{
-  margin-top:20px;
-  padding:15px;
-  background:#111;
-  border:1px solid #333;
-  white-space:pre-wrap;
-  min-height:150px;
-}
-.slider-value{
-  font-size:12px;
-  opacity:0.7;
-}
+body{background:#0f0f14;color:#fff;font-family:Arial;padding:20px}
+.container{max-width:900px;margin:auto}
+h1{color:#00ffd0;text-align:center}
+select,textarea{width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid #333;background:#1a1a22;color:#fff}
+button{margin-top:10px;padding:8px 12px;background:#00ffd0;border:none;border-radius:6px;font-weight:bold;cursor:pointer}
+.output{margin-top:15px;padding:15px;background:#14141b;border-radius:8px;white-space:pre-wrap}
+.section{margin-top:20px;color:#00ffd0;font-weight:bold}
+.history-item{background:#1c1c24;padding:8px;margin-top:5px;border-radius:6px}
 </style>
 </head>
-
 <body>
+<div class="container">
+<h1>🎛 V3.2 PRO Hybrid Studio</h1>
 
-<h1>🎛 AI Music Control Panel V2.3</h1>
-
-<div class="section">
-<h3>Basic Setup</h3>
-
-<label>Song Title</label>
-<input id="title" placeholder="Song Title">
-
-<label>Main Hook</label>
-<input id="hook" placeholder="Catchy Hook Line">
-
-<label>Genre</label>
-<select id="genre">
-<option>Modern Pop</option>
-<option>EDM Festival</option>
-<option>T-POP Ballad</option>
-<option>80s Retro</option>
-<option>Lo-fi Chill</option>
+<label>Select Artist</label>
+<select id="artist">
+<option value="A">Thai Male</option>
+<option value="B">Thai Female</option>
+<option value="C">English Male</option>
+<option value="D">English Female</option>
 </select>
 
-<label>BPM</label>
-<select id="bpm">
-<option>90</option>
-<option>100</option>
-<option>110</option>
-<option>120</option>
-<option>128</option>
-</select>
+<label>Theme</label>
+<textarea id="theme" rows="2"></textarea>
 
-<label>Song Length</label>
-<select id="length">
-<option>Radio 3-4 min</option>
-<option>Extended 4-5 min</option>
-<option>Algorithm 6-7 min</option>
-</select>
+<button onclick="generate()">Generate</button>
+
+<div class="section">📝 Lyrics</div>
+<div id="lyricsOut" class="output"></div>
+
+<div class="section">💾 History</div>
+<div id="history"></div>
 
 </div>
-
-<div class="section">
-<h3>Pro Sound Controls</h3>
-
-<label>Punch <span id="punchVal" class="slider-value">5</span></label>
-<input type="range" id="punch" min="1" max="10" value="5">
-
-<label>Depth <span id="depthVal" class="slider-value">5</span></label>
-<input type="range" id="depth" min="1" max="10" value="5">
-
-<label>Aggression <span id="aggVal" class="slider-value">5</span></label>
-<input type="range" id="aggression" min="1" max="10" value="5">
-
-<label>Warmth <span id="warmVal" class="slider-value">5</span></label>
-<input type="range" id="warmth" min="1" max="10" value="5">
-
-<label>Stereo Width <span id="widthVal" class="slider-value">5</span></label>
-<input type="range" id="width" min="1" max="10" value="5">
-
-</div>
-
-<button onclick="generatePrompt()">🎵 Generate Prompt</button>
-
-<div id="output"></div>
 
 <script>
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)]}
 
-function updateSliderDisplay(id, displayId){
-  document.getElementById(displayId).innerText =
-  document.getElementById(id).value;
+function generate(){
+const artist=document.getElementById("artist").value;
+const theme=document.getElementById("theme").value;
+
+let verse1=[],verse2=[],hook=[];
+
+if(artist==="A"||artist==="B"){
+// Thai rhyme sets
+let endings=["ใจ","ไป","ไกล","ใหม่"];
+let end=rand(endings);
+
+verse1=[
+`แสงไฟสะท้อนใน${theme}`,
+`หัวใจยังเต้นไป`,
+`คืนวันไม่เคยไกล`,
+`ความฝันเริ่มต้นใหม่`
+];
+
+verse2=[
+`เสียงเพลงยังพาใจ`,
+`ให้เราเดินต่อไป`,
+`แม้ทางจะห่างไกล`,
+`แต่รักยังสดใหม่`
+];
+
+hook=[
+`เธอคือแสงในหัวใจ`,
+`ส่องทางฉันต่อไป`,
+`เธอคือแสงในหัวใจ`,
+`ไม่ว่าไกลแค่ไหน`
+];
+}else{
+// English rhyme sets
+let rhymePairs=[
+["light","night"],
+["fire","desire"],
+["heart","start"],
+["time","mine"]
+];
+let pair=rand(rhymePairs);
+
+verse1=[
+`City lights burning ${pair[0]}`,
+`We keep dancing through the ${pair[1]}`,
+`Every dream feels so right`,
+`Holding on to the night`
+];
+
+verse2=[
+`We were running through ${pair[0]}`,
+`Chasing sparks in the ${pair[1]}`,
+`Every shadow turns bright`,
+`When you hold me tight`
+];
+
+hook=[
+`We are alive tonight`,
+`Shining in neon light`,
+`We are alive tonight`,
+`Burning forever bright`
+];
 }
 
-document.getElementById("punch").oninput = function(){
-  updateSliderDisplay("punch","punchVal");
-};
-document.getElementById("depth").oninput = function(){
-  updateSliderDisplay("depth","depthVal");
-};
-document.getElementById("aggression").oninput = function(){
-  updateSliderDisplay("aggression","aggVal");
-};
-document.getElementById("warmth").oninput = function(){
-  updateSliderDisplay("warmth","warmVal");
-};
-document.getElementById("width").oninput = function(){
-  updateSliderDisplay("width","widthVal");
-};
+let lyrics=`
+[Synth Intro]
 
-function getStructure(length){
-  if(length.includes("Radio"))
-    return "Intro / Verse / Pre-Chorus / Chorus / Verse / Chorus / Bridge / Final Chorus";
-  if(length.includes("Extended"))
-    return "Extended structure with instrumental break and dynamic build";
-  if(length.includes("Algorithm"))
-    return "Hook x3 + Extended outro for algorithm boost";
-  return "Standard structure";
-}
+[Verse 1]
+${verse1.join("\n")}
 
-function generatePrompt(){
+[Chorus]
+${hook.join("\n")}
 
-  const title = document.getElementById("title").value || "Untitled";
-  const hook = document.getElementById("hook").value || "Memorable Repeatable Hook";
-  const genre = document.getElementById("genre").value;
-  const bpm = document.getElementById("bpm").value;
-  const length = document.getElementById("length").value;
+[Verse 2]
+${verse2.join("\n")}
 
-  const punch = document.getElementById("punch").value;
-  const depth = document.getElementById("depth").value;
-  const aggression = document.getElementById("aggression").value;
-  const warmth = document.getElementById("warmth").value;
-  const width = document.getElementById("width").value;
-
-  const structure = getStructure(length);
-
-  const prompt =
-`Title: ${title}
-
-Genre: ${genre}
-Tempo: ${bpm} BPM
-Structure: ${structure}
-
-Main Hook:
-"${hook}"
-
-Sound Profile:
-Punch: ${punch}/10
-Depth: ${depth}/10
-Aggression: ${aggression}/10
-Warmth: ${warmth}/10
-Stereo Width: ${width}/10
-
-Production Quality:
-High-end studio mix, premium clarity, preserved dynamic range.
+[Final Chorus x2]
+${hook.join("\n")}
 `;
 
-  document.getElementById("output").innerText = prompt;
+document.getElementById("lyricsOut").innerText=lyrics;
+saveHistory(lyrics);
+loadHistory();
 }
 
-</script>
+function saveHistory(text){
+let songs=JSON.parse(localStorage.getItem("songs")||"[]");
+songs.unshift(text);
+localStorage.setItem("songs",JSON.stringify(songs));
+}
 
+function loadHistory(){
+let songs=JSON.parse(localStorage.getItem("songs")||"[]");
+let container=document.getElementById("history");
+container.innerHTML="";
+songs.forEach((song,i)=>{
+container.innerHTML+=`
+<div class="history-item">
+<button onclick="loadSong(${i})">Load</button>
+<button onclick="deleteSong(${i})">Delete</button>
+Song ${i+1}
+</div>`;
+});
+}
+
+function loadSong(i){
+let songs=JSON.parse(localStorage.getItem("songs")||"[]");
+document.getElementById("lyricsOut").innerText=songs[i];
+}
+
+function deleteSong(i){
+let songs=JSON.parse(localStorage.getItem("songs")||"[]");
+songs.splice(i,1);
+localStorage.setItem("songs",JSON.stringify(songs));
+loadHistory();
+}
+
+loadHistory();
+</script>
 </body>
 </html>

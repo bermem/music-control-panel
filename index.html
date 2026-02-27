@@ -2,52 +2,38 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>AI Music Control Panel V2.0</title>
-
+<title>AI Music Control Panel V2.3 – Smart Optimizer</title>
 <style>
-body{
-  background:#0b0b0f;
-  color:#ffffff;
-  font-family:Arial, sans-serif;
-  margin:40px;
-}
-h1{color:#00ffc3;}
-.section{
-  border:1px solid #222;
-  padding:15px;
-  margin-bottom:20px;
-  border-radius:8px;
-}
-select,input,button,textarea{
-  background:#15151a;
-  color:#ffffff;
-  border:1px solid #333;
-  padding:8px;
-  margin:5px 0;
-}
+body{background:#0b0f14;color:#fff;font-family:Arial;margin:40px;}
+h1{color:#00ffd0;}
+.section{border:1px solid #222;padding:18px;margin-bottom:22px;border-radius:10px;}
+label{display:block;margin-top:10px;font-size:14px;}
+select,input,button{background:#151a22;color:#fff;border:1px solid #333;padding:8px;margin:5px 0;}
 button{cursor:pointer;}
-#output{
-  white-space:pre-wrap;
-  background:#111;
-  padding:15px;
-  border:1px solid #333;
-  margin-top:15px;
-  min-height:120px;
-}
+.slider-value{font-size:12px;opacity:0.7;}
+#output{white-space:pre-wrap;background:#111;padding:15px;border:1px solid #333;margin-top:15px;min-height:150px;}
 </style>
 </head>
-
 <body>
 
-<h1>🎛 AI Music Control Panel V2.0</h1>
+<h1>🎛 AI Music Control Panel V2.3</h1>
 
 <div class="section">
-<h3>Core Settings</h3>
+<h3>Reference Mode</h3>
+<select id="referenceMode" onchange="applyReference()">
+<option value="">-- Select Mode --</option>
+<option>Global Pop Hit</option>
+<option>Festival EDM</option>
+<option>Emotional Ballad</option>
+<option>80s Retro Premium</option>
+<option>Audiophile Dynamic</option>
+</select>
+</div>
 
-<input id="songTitle" placeholder="Song Title" />
-<input id="customHook" placeholder="Custom Hook Line" />
-
-<br>
+<div class="section">
+<h3>Core Setup</h3>
+<input id="songTitle" placeholder="Song Title">
+<input id="customHook" placeholder="Custom Hook Line"><br>
 
 <select id="genre">
 <option>Modern Pop</option>
@@ -58,156 +44,133 @@ button{cursor:pointer;}
 </select>
 
 <select id="bpm">
-<option>90</option>
-<option>100</option>
-<option>110</option>
-<option>120</option>
-<option>128</option>
+<option>90</option><option>100</option><option>110</option>
+<option>120</option><option>128</option>
 </select>
 
-<select id="key">
-<option>C Major</option>
-<option>G Major</option>
-<option>A Minor</option>
-<option>D Major</option>
-<option>F Major</option>
+<select id="length">
+<option>3-4 min (Radio)</option>
+<option>4-5 min (Extended)</option>
+<option>6-7 min (Algorithm Boost)</option>
 </select>
 
-<select id="structure">
-<option>Standard (Verse/Chorus)</option>
-<option>Extended (Pre + Bridge)</option>
-<option>Ultra 6-7 min Algorithm</option>
+<button onclick="smartOptimize()">🧠 Smart Optimize</button>
+</div>
+
+<div class="section">
+<h3>Pro Sound Controls</h3>
+
+<label>Punch <span id="punchVal" class="slider-value">5</span></label>
+<input type="range" id="punch" min="1" max="10" value="5" oninput="updateVal('punch')">
+
+<label>Depth <span id="depthVal" class="slider-value">5</span></label>
+<input type="range" id="depth" min="1" max="10" value="5" oninput="updateVal('depth')">
+
+<label>Aggression <span id="aggVal" class="slider-value">5</span></label>
+<input type="range" id="agg" min="1" max="10" value="5" oninput="updateVal('agg')">
+
+<label>Warmth <span id="warmVal" class="slider-value">5</span></label>
+<input type="range" id="warm" min="1" max="10" value="5" oninput="updateVal('warm')">
+
+<label>Stereo Width <span id="widthVal" class="slider-value">5</span></label>
+<input type="range" id="width" min="1" max="10" value="5" oninput="updateVal('width')">
+
+<label>Mastering</label>
+<select id="master">
+<option>Streaming Clean</option>
+<option>Radio Loud</option>
+<option>Festival Impact</option>
+<option>Audiophile Dynamic</option>
 </select>
 
-<br>
+<br><br>
+<label><input type="checkbox" id="proMode"> Enable Pro Producer Mode</label>
+
+<br><br>
 <button onclick="generate()">🎵 Generate</button>
-<button onclick="copyOutput()">📋 Copy</button>
-<button onclick="exportTXT()">💾 Export .txt</button>
-</div>
-
-<div class="section">
-<h3>Presets</h3>
-<input id="presetName" placeholder="Preset Name"/>
-<button onclick="savePreset()">Save</button>
-<select id="presetList"></select>
-<button onclick="loadPreset()">Load</button>
-</div>
-
-<div class="section">
-<h3>History</h3>
-<select id="historyList"></select>
-<button onclick="loadHistory()">Load</button>
 </div>
 
 <div id="output"></div>
 
 <script>
 
-let history = JSON.parse(localStorage.getItem("promptHistoryV2")) || [];
-let presets = JSON.parse(localStorage.getItem("promptPresetsV2")) || {};
+function updateVal(id){
+ document.getElementById(id+"Val").innerText=document.getElementById(id).value;
+}
+
+function applyReference(){
+ const mode=referenceMode.value;
+ if(mode==="Global Pop Hit") setValues(8,6,5,6,8,"Streaming Clean");
+ if(mode==="Festival EDM") setValues(9,7,8,4,9,"Festival Impact");
+ if(mode==="Emotional Ballad") setValues(6,8,3,8,6,"Streaming Clean");
+ if(mode==="80s Retro Premium") setValues(7,6,4,9,7,"Radio Loud");
+ if(mode==="Audiophile Dynamic") setValues(5,9,3,7,6,"Audiophile Dynamic");
+}
+
+function setValues(p,d,a,w,wi,m){
+ punch.value=p; depth.value=d; agg.value=a; warm.value=w; width.value=wi; master.value=m;
+ updateVal('punch'); updateVal('depth'); updateVal('agg'); updateVal('warm'); updateVal('width');
+}
+
+function smartOptimize(){
+ const g=genre.value;
+ const tempo=parseInt(bpm.value);
+
+ if(g==="EDM Festival" && tempo>=120) setValues(9,7,8,4,9,"Festival Impact");
+ if(g==="Modern Pop") setValues(8,6,5,6,8,"Streaming Clean");
+ if(g==="T-POP Ballad") setValues(6,8,3,8,6,"Streaming Clean");
+ if(g==="Lo-fi Chill") setValues(4,7,2,9,5,"Audiophile Dynamic");
+}
+
+function structureIntelligence(){
+ if(length.value.includes("3-4")) return "Radio Structure: Intro / Verse / Pre / Chorus / Verse / Chorus / Bridge / Final Chorus";
+ if(length.value.includes("4-5")) return "Extended Structure with Instrumental Break";
+ if(length.value.includes("6-7")) return "Algorithm Boost Structure with Hook x3 + Extended Outro";
+}
 
 function generate(){
-  const title=document.getElementById("songTitle").value || "Untitled";
-  const hook=document.getElementById("customHook").value || "Memorable Repeatable Hook";
-  const genre=document.getElementById("genre").value;
-  const bpm=document.getElementById("bpm").value;
-  const key=document.getElementById("key").value;
-  const structure=document.getElementById("structure").value;
 
-  let structureDetail="";
-  if(structure.includes("Ultra")){
-    structureDetail="Hook repetition x3, dynamic drop, extended outro, algorithm optimized length.";
-  }
+ let proNotes="";
+ if(proMode.checked){
+  proNotes=`
+Advanced Production Notes:
+- Vocal forward but controlled
+- Sidechain clarity on low-end
+- Cinematic reverb automation
+- Impactful chorus lift
+- Preserved dynamic range`;
+ }
 
-  const prompt=
-`Title: ${title}
+ const prompt=
+`Title: ${songTitle.value||"Untitled"}
 
-Genre: ${genre}
-Tempo: ${bpm} BPM
-Key: ${key}
+Genre: ${genre.value}
+Tempo: ${bpm.value} BPM
+Structure: ${structureIntelligence()}
 
-Structure: ${structure}
-${structureDetail}
+Hook:
+"${customHook.value||"Memorable Repeatable Hook"}"
 
-Main Hook: "${hook}"
+Sound Profile:
+Punch ${punch.value}/10
+Depth ${depth.value}/10
+Aggression ${agg.value}/10
+Warmth ${warm.value}/10
+Stereo Width ${width.value}/10
 
-Production Notes:
-- Strong intro identity
-- Catchy chorus layering
-- Emotional lift before final drop`;
+Mastering:
+${master.value}
+${proNotes}
 
-  document.getElementById("output").innerText=prompt;
+Production Quality:
+High-end studio mix, premium clarity, Billboard-level polish.
 
-  history.push(prompt);
-  localStorage.setItem("promptHistoryV2",JSON.stringify(history));
-  updateHistory();
+Reference Mode:
+${referenceMode.value}`;
+
+ output.innerText=prompt;
 }
-
-function copyOutput(){
-  navigator.clipboard.writeText(document.getElementById("output").innerText);
-  alert("Copied!");
-}
-
-function exportTXT(){
-  const text=document.getElementById("output").innerText;
-  const blob=new Blob([text],{type:"text/plain"});
-  const link=document.createElement("a");
-  link.href=URL.createObjectURL(blob);
-  link.download="prompt_v2.txt";
-  link.click();
-}
-
-function savePreset(){
-  const name=document.getElementById("presetName").value;
-  presets[name]={
-    genre:genre.value,
-    bpm:bpm.value,
-    key:key.value,
-    structure:structure.value
-  };
-  localStorage.setItem("promptPresetsV2",JSON.stringify(presets));
-  updatePresetList();
-}
-
-function loadPreset(){
-  const selected=document.getElementById("presetList").value;
-  if(presets[selected]){
-    genre.value=presets[selected].genre;
-    bpm.value=presets[selected].bpm;
-    key.value=presets[selected].key;
-    structure.value=presets[selected].structure;
-  }
-}
-
-function updatePresetList(){
-  presetList.innerHTML="";
-  for(let key in presets){
-    let option=document.createElement("option");
-    option.value=key;
-    option.text=key;
-    presetList.appendChild(option);
-  }
-}
-
-function updateHistory(){
-  historyList.innerHTML="";
-  history.forEach((item,index)=>{
-    let option=document.createElement("option");
-    option.value=index;
-    option.text="Prompt "+(index+1);
-    historyList.appendChild(option);
-  });
-}
-
-function loadHistory(){
-  const index=historyList.value;
-  output.innerText=history[index];
-}
-
-updatePresetList();
-updateHistory();
 
 </script>
-
 </body>
 </html>
